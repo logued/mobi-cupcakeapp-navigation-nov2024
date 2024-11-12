@@ -43,7 +43,8 @@ import com.example.cupcake.ui.StartOrderScreen
 /**
  * enum values that represent the screens in the app
  * In the NavHost, the name of the enum is extracted as a String,
- * and is used as the 'route' or destination screen
+ * and is used as the 'route' or destination screen.
+ * (A route is a string that corresponds to a destination screen)
  */
 enum class CupcakeScreen(@StringRes val title: Int) {
     Start(title = R.string.app_name),
@@ -118,17 +119,24 @@ fun CupcakeApp(
                 .verticalScroll(rememberScrollState())
                 .padding(innerPadding)
         ) {
-            // list of screens (Destinations) that can be displayed
-            // route determines the next Destination (like a switch statement)
-            composable(route = CupcakeScreen.Start.name) {
+
+            // add a list of composable screens and their identifiers to the NavHost
+            // Each composable screen is identified by a String value (called a "route")
+            //  - the route is simply a name for identifying a composable scree within the NavHost
+            //
+            composable(route = CupcakeScreen.Start.name) {  // route is string representation of a destination
                 StartOrderScreen(   // destination
+                    // pass in any data that is required in the screen
                     quantityOptions = DataSource.quantityOptions,
+
+                    // add the lambda to be called when finished in the current screen.
+                    // here we update state, and we navigate to the next screen (identified by route)
                     onNextButtonClicked = {
                         // a lambda block that receives one argument referred to as "it"
                         // that is the quantity of cupcakes required (as per button clicked).
-                        // then, navigate() is called to move to next screen.
+                        // Then, navigate() is called to navigate to the next screen using its route (i.e its name)
                         viewModel.setQuantity(it) // update state
-                        navController.navigate(CupcakeScreen.Flavor.name) // move to destination
+                        navController.navigate(CupcakeScreen.Flavor.name) // move to destination screen
                     },
                     modifier = Modifier
                         .fillMaxSize()
