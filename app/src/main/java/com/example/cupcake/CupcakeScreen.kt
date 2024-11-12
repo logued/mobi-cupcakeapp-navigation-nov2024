@@ -122,8 +122,10 @@ fun CupcakeApp(
                 StartOrderScreen(   // destination
                     quantityOptions = DataSource.quantityOptions,
                     onNextButtonClicked = {
-                        viewModel.setQuantity(it)
-                        navController.navigate(CupcakeScreen.Flavor.name)
+                        // lambda function that receives one argument referred to as "it"
+                        // this is the quantity of cupcakes required (as per button clicked)
+                        viewModel.setQuantity(it) // update state
+                        navController.navigate(CupcakeScreen.Flavor.name) // move to destination
                     },
                     modifier = Modifier
                         .fillMaxSize()
@@ -143,7 +145,7 @@ fun CupcakeApp(
                     onSelectionChanged = { viewModel.setFlavor(it) },
                     modifier = Modifier.fillMaxHeight()
                 )
-            }
+        }
             composable(route = CupcakeScreen.Pickup.name) {
                 SelectOptionScreen(
                     subtotal = uiState.price,

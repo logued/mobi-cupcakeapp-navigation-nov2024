@@ -81,10 +81,23 @@ fun StartOrderScreen(
                 dimensionResource(id = R.dimen.padding_medium)
             )
         ) {
+            // iterate through the supplied list of quantityOptions
+            // ie:
+            //            val quantityOptions = listOf(
+            //                Pair(R.string.one_cupcake, 1),
+            //                Pair(R.string.six_cupcakes, 6),
+            //                Pair(R.string.twelve_cupcakes, 12)
+            // for each list item, create a Button. When the button is clicked it
+            // will call the onNextButtonClicked with the relevant number of cupcakes.
+            // (onSelectNumberOfCupcakes would be a better name!)
+            //
             quantityOptions.forEach { item ->
-                SelectQuantityButton(
-                    labelResourceId = item.first,
-                    onClick = { onNextButtonClicked(item.second) },
+                SelectQuantityButton(           // creates a button with the resource label as its text
+                    labelResourceId = item.first,   // display the items resource id (the first item in the Pair)
+                    onClick = { onNextButtonClicked(item.second) },  // supply the lambda that will be called
+                                                                    // when the user clicks on "Next" button
+                                                        // the items second value in the pair is the quantity (an int)
+                                                        // the receiver of this argument calls it "it" by convention
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
