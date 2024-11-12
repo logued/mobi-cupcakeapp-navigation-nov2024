@@ -122,8 +122,9 @@ fun CupcakeApp(
                 StartOrderScreen(   // destination
                     quantityOptions = DataSource.quantityOptions,
                     onNextButtonClicked = {
-                        // lambda function that receives one argument referred to as "it"
-                        // this is the quantity of cupcakes required (as per button clicked)
+                        // a lambda block that receives one argument referred to as "it"
+                        // that is the quantity of cupcakes required (as per button clicked).
+                        // then, navigate() is called to move to next screen.
                         viewModel.setQuantity(it) // update state
                         navController.navigate(CupcakeScreen.Flavor.name) // move to destination
                     },
