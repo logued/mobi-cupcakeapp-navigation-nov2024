@@ -42,6 +42,8 @@ import com.example.cupcake.ui.StartOrderScreen
 
 /**
  * enum values that represent the screens in the app
+ * In the NavHost, the name of the enum is extracted as a String,
+ * and is used as the 'route' or destination screen
  */
 enum class CupcakeScreen(@StringRes val title: Int) {
     Start(title = R.string.app_name),
