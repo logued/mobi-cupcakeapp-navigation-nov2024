@@ -84,18 +84,19 @@ fun StartOrderScreen(
             // iterate through the supplied list of quantityOptions
             // ie:
             //            val quantityOptions = listOf(
-            //                Pair(R.string.one_cupcake, 1),
-            //                Pair(R.string.six_cupcakes, 6),
-            //                Pair(R.string.twelve_cupcakes, 12)
-            // for each list item, create a Button. When the button is clicked it
-            // will call the onNextButtonClicked with the relevant number of cupcakes.
+            //                Pair(R.string.ONE_cupcake, 1),
+            //                Pair(R.string.SIX_cupcakes, 6),
+            //                Pair(R.string.TWELVE_cupcakes, 12)
+            // for each list item, create a Button. When the button is clicked its onClick event
+            // will call the onNextButtonClicked with the relevant number of cupcakes -
+            //     accessible using the "it" parameter name in the called function.
             // (onSelectNumberOfCupcakes would be a better name!)
             //
             quantityOptions.forEach { item ->
-                SelectQuantityButton(           // creates a button with the resource label as its text
+                SelectQuantityButton(               // creates a button with the resource label text as its text
                     labelResourceId = item.first,   // display the items resource id (the first item in the Pair)
                     onClick = { onNextButtonClicked(item.second) },  // supply the lambda that will be called
-                                                                    // when the user clicks on "Next" button
+                                                                     // when the user clicks on "Next" button
                                                         // the items second value in the pair is the quantity (an int)
                                                         // the receiver of this argument calls it "it" by convention
                     modifier = Modifier.fillMaxWidth(),

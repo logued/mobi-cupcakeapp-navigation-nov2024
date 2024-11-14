@@ -102,7 +102,7 @@ fun CupcakeApp(
         topBar = {
             CupcakeAppBar(
                 currentScreen = currentScreen,
-                canNavigateBack = navController.previousBackStackEntry != null,
+                canNavigateBack = navController.previousBackStackEntry != null,  // generates a  Boolean
                 navigateUp = { navController.navigateUp() }
             )
         }
@@ -111,7 +111,7 @@ fun CupcakeApp(
         // uiState updated by flow from ViewModel
         // and observed by Compose
         val uiState by viewModel.uiState.collectAsState()
-
+///////////////////////////////////////////////////////////////////////////////////////////////////
         NavHost(  // parameters supplied to navHost composable
             navController = navController,
             startDestination = CupcakeScreen.Start.name, // name of the enum i.e. "Start"
@@ -126,17 +126,24 @@ fun CupcakeApp(
             //  - the route is simply a name for identifying a composable scree within the NavHost
             //
             composable(route = CupcakeScreen.Start.name) {  // route is string representation of a destination
-                StartOrderScreen(   // destination
+                StartOrderScreen(   // destination screen
                     // pass in any data that is required in the screen
+
+                    // get list of [button name,quantity] Pairs
                     quantityOptions = DataSource.quantityOptions,
 
-                    // add the lambda to be called when finished in the current screen.
+                    // add the lambda to be called when user clicks on button to selecting quantity, and
+                    // requesting move to next screen.
                     // here we update state, and we navigate to the next screen (identified by route)
                     onNextButtonClicked = {
-                        // a lambda block that receives one argument referred to as "it"
+                        // a lambda block of code that receives one argument referred to as "it"
                         // that is the quantity of cupcakes required (as per button clicked).
-                        // Then, navigate() is called to navigate to the next screen using its route (i.e its name)
+                        // The quantity is passed  into the ViewModel by a call to setQuantity,
+                        // and it updates the quantity (and price) in the uiState.
                         viewModel.setQuantity(it) // update state
+
+                        // Then, navigate() is called to navigate to the next screen
+                        // identified by its route (i.e the String representation of it name)
                         navController.navigate(CupcakeScreen.Flavor.name) // move to destination screen
                     },
                     modifier = Modifier
