@@ -1,5 +1,9 @@
 /*
-    CupcakeScreen
+    CupcakeScreen -
+    Starting point that contains AppBar and CupCakeApp composable
+    CupCakeApp contains the NavHost which allows use to set up the navigation routes.
+    The ViewModel and navController are instantiated here.
+
  */
 package com.example.cupcake
 
@@ -111,7 +115,7 @@ fun CupcakeApp(
         // uiState updated by flow from ViewModel
         // and observed by Compose
         val uiState by viewModel.uiState.collectAsState()
-///////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////   NavHost
         NavHost(  // parameters supplied to navHost composable
             navController = navController,
             startDestination = CupcakeScreen.Start.name, // name of the enum i.e. "Start"
@@ -123,7 +127,8 @@ fun CupcakeApp(
 
             // add a list of composable screens and their identifiers to the NavHost
             // Each composable screen is identified by a String value (called a "route")
-            //  - the route is simply a name for identifying a composable scree within the NavHost
+            //  - the route is simply a name for identifying a composable screen within the NavHost
+            //  - screens are called Destinations
             //
             composable(route = CupcakeScreen.Start.name) {  // route is string representation of a destination
                 StartOrderScreen(   // destination screen
@@ -132,18 +137,22 @@ fun CupcakeApp(
                     // get list of [button name,quantity] Pairs
                     quantityOptions = DataSource.quantityOptions,
 
-                    // add the lambda to be called when user clicks on button to selecting quantity, and
-                    // requesting move to next screen.
-                    // here we update state, and we navigate to the next screen (identified by route)
+                    // add the lambda code to be called when user clicks on button to selecting
+                    // quantity, and requesting move to next screen.
                     onNextButtonClicked = {
                         // a lambda block of code that receives one argument referred to as "it"
                         // that is the quantity of cupcakes required (as per button clicked).
-                        // The quantity is passed  into the ViewModel by a call to setQuantity,
+                        // The quantity is passed into the ViewModel by a call to setQuantity,
                         // and it updates the quantity (and price) in the uiState.
                         viewModel.setQuantity(it) // update state
 
-                        // Then, navigate() is called to navigate to the next screen
-                        // identified by its route (i.e the String representation of it name)
+                        // Note: in general, we call functions in the ViewModel to update the _uiState
+                        // because the state is private. We don't allow direct access the state directly
+                        // as this is good OOP 'encapsulation' practice, and reduces chances of spurious
+                        // updates of state variables.
+
+                        // Next, navigate() is called to navigate to the next screen
+                        // identified by its route (i.e a String representation of it name)
                         navController.navigate(CupcakeScreen.Flavor.name) // move to destination screen
                     },
                     modifier = Modifier
@@ -159,13 +168,19 @@ fun CupcakeApp(
                     onCancelButtonClicked = {
                         cancelOrderAndNavigateToStart(viewModel, navController)
                     },
-                    // get list of flavours, transform id into corresponding String
+                    // map = iterate over the list of resource IDs,
+                    //        and transform (map) from id into corresponding String
+                    // (map applies the transform function to all items in list )
+                    //  Current local Context is required.
                     options = DataSource.flavors.map { id -> context.resources.getString(id) },
                     onSelectionChanged = { viewModel.setFlavor(it) },
                     modifier = Modifier.fillMaxHeight()
                 )
         }
             composable(route = CupcakeScreen.Pickup.name) {
+                // Notice that the SelectOptionScreen composable function is used to
+                // create both the Flavor screen (above) and the Pickup date screen.
+                //
                 SelectOptionScreen(
                     subtotal = uiState.price,
                     onNextButtonClicked = { navController.navigate(CupcakeScreen.Summary.name) },
@@ -173,7 +188,7 @@ fun CupcakeApp(
                         cancelOrderAndNavigateToStart(viewModel, navController)
                     },
                     options = uiState.pickupOptions,
-                    onSelectionChanged = { viewModel.setDate(it) },
+                    onSelectionChanged = { viewModel.setDate(it) },  // set Pickup date
                     modifier = Modifier.fillMaxHeight()
                 )
             }
@@ -184,8 +199,9 @@ fun CupcakeApp(
                     onCancelButtonClicked = {
                         cancelOrderAndNavigateToStart(viewModel, navController)
                     },
-                    onSendButtonClicked = { subject: String, summary: String ->
-                        shareOrder(context, subject = subject, summary = summary)
+                    onSendButtonClicked = {
+                        subject: String,
+                        summary: String -> shareOrder(context, subject = subject, summary = summary)
                     },
                     modifier = Modifier.fillMaxHeight()
                 )
@@ -215,6 +231,10 @@ private fun shareOrder(context: Context, subject: String, summary: String) {
         putExtra(Intent.EXTRA_SUBJECT, subject)
         putExtra(Intent.EXTRA_TEXT, summary)
     }
+    // Need to use 'context' - which is the component that is trying to start another activity.
+    // Android needs to know where the request originated from, and this is the context.
+    // Context also needed to access resource id.
+    //
     context.startActivity(
         Intent.createChooser(
             intent,
