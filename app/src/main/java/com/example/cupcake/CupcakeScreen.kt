@@ -84,15 +84,16 @@ fun CupcakeAppBar(
 
 @Composable
 fun CupcakeApp(
-
-    viewModel: OrderViewModel = viewModel(),
-    navController: NavHostController = rememberNavController()
+    // the two parameters defined below are initialized with default values
+    viewModel: OrderViewModel = viewModel(),    // create or retrieve existing ViewModel
+    navController: NavHostController = rememberNavController()  // create
 
 ) {
-    // Get current back stack entry (if any)
+    // Get current "back stack" entry as type State (if any)
+    // i.e this is the currently displayed screen (as State)
     val backStackEntry by navController.currentBackStackEntryAsState()
 
-    // Get the name of the current screen (if none, set to Start)
+    // Get the name of the current screen as a String  (if null, set to "Start")
     val currentScreen = CupcakeScreen.valueOf(
         backStackEntry?.destination?.route ?: CupcakeScreen.Start.name
     )
